@@ -705,14 +705,17 @@ class MockOrganDonorRepository implements OrganDonorRepository {
   }
 
   @override
-  Future<Result<List<OrganDonor>>> getByPatientId(String patientId) async {
+  Future<Result<OrganDonor>> getByPatientId(String patientId) async {
     try {
       await Future.delayed(const Duration(milliseconds: 300));
-      final filtered = _donors.where((d) => d.patientId == patientId).toList();
-      return Result.success(filtered);
+      final donor = _donors.firstWhere(
+        (d) => d.patientId == patientId,
+        orElse: () => throw Exception('Donor not found'),
+      );
+      return Result.success(donor);
     } catch (e) {
       return Result.failure(
-        ServerFailure('Failed to fetch donors by patient: ${e.toString()}'),
+        ServerFailure('Failed to fetch donor by patient: ${e.toString()}'),
       );
     }
   }

@@ -286,9 +286,7 @@ class MockHospitalRepository implements HospitalRepository {
   }
 
   @override
-  Future<Result<Hospital>> getByLicenseNumber(
-    String licenseNumber,
-  ) async {
+  Future<Result<Hospital>> getByLicenseNumber(String licenseNumber) async {
     try {
       await Future.delayed(const Duration(milliseconds: 300));
       final hospital = _hospitals.firstWhere(
@@ -335,7 +333,9 @@ class MockHospitalRepository implements HospitalRepository {
   }
 
   @override
-  Future<Result<Map<String, int>>> getHospitalStatistics(String hospitalId) async {
+  Future<Result<Map<String, int>>> getHospitalStatistics(
+    String hospitalId,
+  ) async {
     try {
       await Future.delayed(const Duration(milliseconds: 300));
       final hospital = _hospitals.firstWhere((h) => h.id == hospitalId);
@@ -345,7 +345,8 @@ class MockHospitalRepository implements HospitalRepository {
         'emergencyBeds': hospital.emergencyBeds,
         'specialtiesCount': hospital.specialties.length,
         'servicesCount': hospital.services.length,
-        'organTransplantCapabilitiesCount': hospital.organTransplantCapabilities?.length ?? 0,
+        'organTransplantCapabilitiesCount':
+            hospital.organTransplantCapabilities?.length ?? 0,
       };
       return Result.success(stats);
     } catch (e) {
@@ -422,14 +423,18 @@ class MockHospitalRepository implements HospitalRepository {
     try {
       await Future.delayed(const Duration(milliseconds: 300));
       var filteredHospitals = _hospitals;
-      
+
       // Apply search query
       if (searchQuery != null && searchQuery.isNotEmpty) {
-        filteredHospitals = filteredHospitals.where((h) =>
-            h.name.toLowerCase().contains(searchQuery.toLowerCase()) ||
-            h.city.toLowerCase().contains(searchQuery.toLowerCase())).toList();
+        filteredHospitals = filteredHospitals
+            .where(
+              (h) =>
+                  h.name.toLowerCase().contains(searchQuery.toLowerCase()) ||
+                  h.city.toLowerCase().contains(searchQuery.toLowerCase()),
+            )
+            .toList();
       }
-      
+
       // Apply sorting
       if (sortBy != null) {
         filteredHospitals.sort((a, b) {
@@ -450,11 +455,14 @@ class MockHospitalRepository implements HospitalRepository {
           return ascending ? comparison : -comparison;
         });
       }
-      
+
       // Apply pagination
       final startIndex = page * limit;
       final endIndex = (startIndex + limit).clamp(0, filteredHospitals.length);
-      final paginatedHospitals = filteredHospitals.sublist(startIndex, endIndex);
+      final paginatedHospitals = filteredHospitals.sublist(
+        startIndex,
+        endIndex,
+      );
       return Result.success(paginatedHospitals);
     } catch (e) {
       return Result.failure(
