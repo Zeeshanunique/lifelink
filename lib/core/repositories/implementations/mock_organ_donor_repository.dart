@@ -361,7 +361,9 @@ class MockOrganDonorRepository implements OrganDonorRepository {
   }
 
   @override
-  Future<Result<List<OrganDonor>>> getCompatibleDonors(String recipientId) async {
+  Future<Result<List<OrganDonor>>> getCompatibleDonors(
+    String recipientId,
+  ) async {
     try {
       await Future.delayed(const Duration(milliseconds: 300));
       // Mock implementation - return all available donors for any recipient
@@ -464,14 +466,18 @@ class MockOrganDonorRepository implements OrganDonorRepository {
   Future<Result<Map<String, int>>> getDonorStatistics(String hospitalId) async {
     try {
       await Future.delayed(const Duration(milliseconds: 300));
-      final hospitalDonors = _donors.where((d) => d.hospitalId == hospitalId).toList();
+      final hospitalDonors = _donors
+          .where((d) => d.hospitalId == hospitalId)
+          .toList();
       final stats = {
         'totalDonors': hospitalDonors.length,
         'activeDonors': hospitalDonors
             .where((d) => !d.isDeceased && !d.isTransplanted)
             .length,
         'deceasedDonors': hospitalDonors.where((d) => d.isDeceased).length,
-        'transplantedDonors': hospitalDonors.where((d) => d.isTransplanted).length,
+        'transplantedDonors': hospitalDonors
+            .where((d) => d.isTransplanted)
+            .length,
         'averageAge': hospitalDonors.isNotEmpty
             ? hospitalDonors.fold(
                     0,
@@ -647,14 +653,20 @@ class MockOrganDonorRepository implements OrganDonorRepository {
     try {
       await Future.delayed(const Duration(milliseconds: 300));
       var filteredDonors = _donors;
-      
+
       // Apply search query
       if (searchQuery != null && searchQuery.isNotEmpty) {
-        filteredDonors = filteredDonors.where((d) =>
-            '${d.firstName} ${d.lastName}'.toLowerCase().contains(searchQuery.toLowerCase()) ||
-            d.city.toLowerCase().contains(searchQuery.toLowerCase())).toList();
+        filteredDonors = filteredDonors
+            .where(
+              (d) =>
+                  '${d.firstName} ${d.lastName}'.toLowerCase().contains(
+                    searchQuery.toLowerCase(),
+                  ) ||
+                  d.city.toLowerCase().contains(searchQuery.toLowerCase()),
+            )
+            .toList();
       }
-      
+
       // Apply sorting
       if (sortBy != null) {
         filteredDonors.sort((a, b) {
@@ -678,7 +690,7 @@ class MockOrganDonorRepository implements OrganDonorRepository {
           return ascending ? comparison : -comparison;
         });
       }
-      
+
       // Apply pagination
       final startIndex = page * limit;
       final endIndex = (startIndex + limit).clamp(0, filteredDonors.length);
