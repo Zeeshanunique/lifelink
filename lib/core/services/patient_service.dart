@@ -214,4 +214,23 @@ class PatientService extends BaseServiceWithValidation<Patient> {
       );
     }
   }
+
+  // Additional methods needed by providers
+  Future<Result<List<Patient>>> searchPatients(String query) async {
+    return search(query);
+  }
+
+  Future<Result<List<Patient>>> getPatientsByStatus(String status) async {
+    return getByStatus(status);
+  }
+
+  Future<Result<List<Patient>>> getRecentPatients() async {
+    try {
+      return await _repository.getRecentPatients();
+    } catch (e) {
+      return Result.failure(
+        ServerFailure('Failed to fetch recent patients: ${e.toString()}'),
+      );
+    }
+  }
 }

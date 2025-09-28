@@ -29,4 +29,5 @@ abstract class PatientRepository extends BaseRepositoryWithPagination<Patient> {
     DateTime endDate,
   );
   Future<Result<List<Patient>>> getPatientsByDepartment(String department);
+  Future<Result<List<Patient>>> getRecentPatients();
 }

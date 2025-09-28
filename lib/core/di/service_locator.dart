@@ -5,6 +5,8 @@ import '../repositories/organ_donor_repository.dart';
 import '../repositories/appointment_repository.dart';
 import '../repositories/implementations/mock_hospital_repository.dart';
 import '../repositories/implementations/mock_organ_donor_repository.dart';
+import '../repositories/implementations/mock_patient_repository.dart';
+import '../repositories/implementations/mock_appointment_repository.dart';
 import '../services/hospital_service.dart';
 import '../services/organ_donor_service.dart';
 import '../services/patient_service.dart';
@@ -22,12 +24,10 @@ class ServiceLocator {
       () => MockOrganDonorRepository(),
     );
     getIt.registerLazySingleton<PatientRepository>(
-      () => throw UnimplementedError('PatientRepository implementation needed'),
+      () => MockPatientRepository(),
     );
     getIt.registerLazySingleton<AppointmentRepository>(
-      () => throw UnimplementedError(
-        'AppointmentRepository implementation needed',
-      ),
+      () => MockAppointmentRepository(),
     );
 
     // Services

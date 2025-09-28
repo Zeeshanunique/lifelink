@@ -17,6 +17,7 @@ class Patient extends BaseModel {
   final String city;
   final String state;
   final String country;
+  final String? zipCode;
   final String? emergencyContactName;
   final String? emergencyContactPhone;
   final String? emergencyContactRelation;
@@ -53,6 +54,7 @@ class Patient extends BaseModel {
     required this.city,
     required this.state,
     required this.country,
+    this.zipCode,
     this.emergencyContactName,
     this.emergencyContactPhone,
     this.emergencyContactRelation,
@@ -111,6 +113,7 @@ class Patient extends BaseModel {
     String? city,
     String? state,
     String? country,
+    String? zipCode,
     String? emergencyContactName,
     String? emergencyContactPhone,
     String? emergencyContactRelation,
@@ -147,6 +150,7 @@ class Patient extends BaseModel {
       city: city ?? this.city,
       state: state ?? this.state,
       country: country ?? this.country,
+      zipCode: zipCode ?? this.zipCode,
       emergencyContactName: emergencyContactName ?? this.emergencyContactName,
       emergencyContactPhone:
           emergencyContactPhone ?? this.emergencyContactPhone,

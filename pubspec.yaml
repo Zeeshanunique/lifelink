@@ -66,6 +66,10 @@ dependencies:
   
   # Date and Time
   timeago: ^3.6.1
+  
+  # File Handling
+  file_picker: ^8.1.2
+  path: ^1.9.0
 
 dev_dependencies:
   flutter_test:

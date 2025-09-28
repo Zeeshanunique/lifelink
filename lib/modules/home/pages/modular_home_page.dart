@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/providers/auth_providers.dart';
+import '../../../core/models/auth_user.dart';
+import '../../../core/widgets/rbac_widget.dart';
 
 class ModularHomePage extends ConsumerWidget {
   const ModularHomePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final role = ref.watch(userRoleProvider);
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
@@ -89,9 +93,13 @@ class ModularHomePage extends ConsumerWidget {
 
             const SizedBox(height: 24),
 
-            // Quick Actions Section
-            const Text(
-              'Quick Actions',
+            // Quick Actions Section (role-specific)
+            Text(
+              role == UserRole.admin
+                  ? 'Admin Actions'
+                  : role == UserRole.hospital
+                  ? 'Hospital Actions'
+                  : 'Patient Actions',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -100,47 +108,108 @@ class ModularHomePage extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
 
-            // Module Cards
-            _buildModuleCard(
-              context,
-              'Hospital Management',
-              'Manage hospitals, departments, and staff',
-              Icons.local_hospital,
-              const Color(0xFF10B981),
-              '/hospitals',
+            // Module Cards (role-specific with RBAC)
+            RoleBasedWidget(
+              allowedRoles: [UserRole.admin, UserRole.hospital],
+              child: Column(
+                children: [
+                  _buildModuleCard(
+                    context,
+                    'Hospital Management',
+                    'Manage hospitals, departments, and staff',
+                    Icons.local_hospital,
+                    const Color(0xFF10B981),
+                    '/hospitals',
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
             ),
 
-            const SizedBox(height: 16),
-
-            _buildModuleCard(
-              context,
-              'Organ Donor Management',
-              'Register and manage organ donors',
-              Icons.favorite,
-              const Color(0xFFEF4444),
-              '/donors',
+            RoleBasedWidget(
+              allowedRoles: [UserRole.admin, UserRole.patient],
+              child: Column(
+                children: [
+                  _buildModuleCard(
+                    context,
+                    'Organ Donor Management',
+                    'Register and manage organ donors',
+                    Icons.favorite,
+                    const Color(0xFFEF4444),
+                    '/donors',
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
             ),
 
-            const SizedBox(height: 16),
-
-            _buildModuleCard(
-              context,
-              'Patient Management',
-              'Track patient records and medical history',
-              Icons.people,
-              const Color(0xFF8B5CF6),
-              '/patients',
+            RoleBasedWidget(
+              allowedRoles: [UserRole.hospital],
+              child: Column(
+                children: [
+                  _buildModuleCard(
+                    context,
+                    'Patient Management',
+                    'Track patient records and medical history',
+                    Icons.people,
+                    const Color(0xFF8B5CF6),
+                    '/patients',
+                  ),
+                  const SizedBox(height: 16),
+                  _buildModuleCard(
+                    context,
+                    'Appointment Management',
+                    'Schedule and manage appointments',
+                    Icons.calendar_today,
+                    const Color(0xFFF59E0B),
+                    '/appointments',
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
             ),
 
-            const SizedBox(height: 16),
+            RoleBasedWidget(
+              allowedRoles: [UserRole.patient],
+              child: Column(
+                children: [
+                  _buildModuleCard(
+                    context,
+                    'Medical Records',
+                    'View and upload your medical documents',
+                    Icons.description,
+                    const Color(0xFF8B5CF6),
+                    '/medical-records',
+                  ),
+                  const SizedBox(height: 16),
+                  _buildModuleCard(
+                    context,
+                    'Donor Requests',
+                    'Create and track organ donation requests',
+                    Icons.healing,
+                    const Color(0xFFEF4444),
+                    '/donor-requests',
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            ),
 
-            _buildModuleCard(
-              context,
-              'Appointment Management',
-              'Schedule and manage appointments',
-              Icons.calendar_today,
-              const Color(0xFFF59E0B),
-              '/appointments',
+            RoleBasedWidget(
+              allowedRoles: [UserRole.admin],
+              child: Column(
+                children: [
+                  _buildModuleCard(
+                    context,
+                    'Analytics',
+                    'System-wide metrics and insights',
+                    Icons.analytics,
+                    const Color(0xFF2563EB),
+                    '/analytics',
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
             ),
 
             const SizedBox(height: 24),

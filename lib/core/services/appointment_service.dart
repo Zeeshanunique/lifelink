@@ -304,4 +304,13 @@ class AppointmentService extends BaseServiceWithValidation<Appointment> {
       );
     }
   }
+
+  // Additional methods needed by providers
+  Future<Result<List<Appointment>>> getTodaysAppointments() async {
+    return getTodayAppointments();
+  }
+
+  Future<Result<List<Appointment>>> searchAppointments(String query) async {
+    return search(query);
+  }
 }

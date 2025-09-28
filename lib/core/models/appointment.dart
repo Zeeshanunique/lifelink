@@ -33,6 +33,15 @@ class Appointment extends BaseModel {
   final String? completedBy;
   final Map<String, dynamic>? attachments;
 
+  // UI convenience properties
+  String get title => type;
+  String get patientName =>
+      'Patient $patientId'; // This should be resolved from patientId
+  String get doctorName =>
+      'Dr. $doctorId'; // This should be resolved from doctorId
+  DateTime get appointmentDate => scheduledDate;
+  String get appointmentTime => timeSlot;
+
   const Appointment({
     required super.id,
     required super.createdAt,

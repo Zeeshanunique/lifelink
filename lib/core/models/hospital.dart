@@ -12,6 +12,8 @@ class Hospital extends BaseModel {
   final String state;
   final String country;
   final String postalCode;
+  final String? description;
+  final String? status;
   final String? phoneNumber;
   final String? email;
   final String? website;
@@ -41,6 +43,8 @@ class Hospital extends BaseModel {
     required this.state,
     required this.country,
     required this.postalCode,
+    this.description,
+    this.status,
     this.phoneNumber,
     this.email,
     this.website,
@@ -86,6 +90,8 @@ class Hospital extends BaseModel {
     String? state,
     String? country,
     String? postalCode,
+    String? description,
+    String? status,
     String? phoneNumber,
     String? email,
     String? website,
@@ -115,6 +121,8 @@ class Hospital extends BaseModel {
       state: state ?? this.state,
       country: country ?? this.country,
       postalCode: postalCode ?? this.postalCode,
+      description: description ?? this.description,
+      status: status ?? this.status,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       email: email ?? this.email,
       website: website ?? this.website,

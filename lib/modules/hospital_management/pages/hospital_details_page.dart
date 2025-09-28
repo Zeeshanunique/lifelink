@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/models/hospital.dart';
+import '../../../core/providers/auth_providers.dart';
+import '../../../core/models/auth_user.dart';
 
-class HospitalDetailsPage extends StatelessWidget {
+class HospitalDetailsPage extends ConsumerWidget {
   final Hospital hospital;
 
   const HospitalDetailsPage({super.key, required this.hospital});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
@@ -20,6 +23,11 @@ class HospitalDetailsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Admin Actions (Approve / Decline) - visible only to Admin
+            if (ref.watch(userRoleProvider) == UserRole.admin)
+              _AdminApprovalBar(hospital: hospital),
+            const SizedBox(height: 12),
+
             // Hospital Info Card
             Card(
               child: Padding(
@@ -270,6 +278,66 @@ class HospitalDetailsPage extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _AdminApprovalBar extends StatelessWidget {
+  final Hospital hospital;
+  const _AdminApprovalBar({required this.hospital});
+
+  @override
+  Widget build(BuildContext context) {
+    // Simple role gate via snackbar prompt; in a full app we'd read current user role.
+    void notAdminGuard(VoidCallback action) {
+      // Placeholder: Always allow for now. Replace with role check if available.
+      action();
+    }
+
+    return Card(
+      color: const Color(0xFFFFFBEB),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: Color(0xFFFDE68A)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            const Icon(Icons.verified_user, color: Color(0xFF92400E)),
+            const SizedBox(width: 8),
+            const Expanded(
+              child: Text(
+                'Admin Review: Approve or decline hospital onboarding request.',
+                style: TextStyle(color: Color(0xFF92400E)),
+              ),
+            ),
+            TextButton.icon(
+              onPressed: () {
+                notAdminGuard(() {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Approved ${hospital.name}')),
+                  );
+                });
+              },
+              icon: const Icon(Icons.check_circle, color: Colors.green),
+              label: const Text('Approve'),
+            ),
+            const SizedBox(width: 8),
+            TextButton.icon(
+              onPressed: () {
+                notAdminGuard(() {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Declined ${hospital.name}')),
+                  );
+                });
+              },
+              icon: const Icon(Icons.cancel, color: Colors.red),
+              label: const Text('Decline'),
+            ),
+          ],
+        ),
       ),
     );
   }
